@@ -11,45 +11,45 @@ with open('churn-model.pck', 'rb') as f:
 # Título de la aplicación
 st.title("Predicción de Churn de Clientes")
 
-# Formulario para introducir datos del cliente (solo los más influyentes)
+# Formulario con 11 campos: los 3 numéricos + los 8 categóricos menos influyentes
 st.header("Introduce los datos del cliente:")
 
-contract = st.selectbox("Tipo de contrato", ["month-to-month", "one_year", "two_year"])
-dependents = st.selectbox("Dependientes", ["no", "yes"])
-device_protection = st.selectbox("Protección de dispositivos", ["no", "yes", "no_internet_service"])
-internet_service = st.selectbox("Tipo de Internet", ["dsl", "fiber_optic", "no"])
-monthly_charges = st.number_input("Cargos mensuales", min_value=0.0, max_value=500.0, step=0.1)
-online_backup = st.selectbox("Copia de seguridad online", ["no", "yes", "no_internet_service"])
-online_security = st.selectbox("Seguridad online", ["no", "yes", "no_internet_service"])
-paperless_billing = st.selectbox("Facturación sin papel", ["no", "yes"])
-payment_method = st.selectbox("Método de pago", ["bank_transfer_(automatic)", "credit_card_(automatic)", "electronic_check", "mailed_check"])
-streaming_movies = st.selectbox("Películas en streaming", ["no", "yes", "no_internet_service"])
-streaming_tv = st.selectbox("Televisión en streaming", ["no", "yes", "no_internet_service"])
-tech_support = st.selectbox("Soporte técnico", ["no", "yes", "no_internet_service"])
+# 3 campos numéricos
 tenure = st.number_input("Antigüedad (meses)", min_value=0, max_value=100, step=1)
+monthly_charges = st.number_input("Cargos mensuales", min_value=0.0, max_value=500.0, step=0.1)
 total_charges = st.number_input("Cargos totales", min_value=0.0, max_value=10000.0, step=0.1)
+
+# 8 campos categóricos menos importantes (MI más baja)
+streaming_movies = st.selectbox("Películas en streaming", ["no", "yes", "no_internet_service"])
+paperless_billing = st.selectbox("Facturación sin papel", ["no", "yes"])
+dependents = st.selectbox("Dependientes", ["no", "yes"])
+partner = st.selectbox("Pareja", ["no", "yes"])
+senior_citizen = st.selectbox("¿Es persona mayor?", ["no", "yes"])
+multiplelines = st.selectbox("Múltiples líneas", ["no", "no_phone_service", "yes"])
+phoneservice = st.selectbox("Servicio telefónico", ["no", "yes"])
+gender = st.selectbox("Género", ["female", "male"])
 
 # Botón de predicción
 if st.button("Predecir"):
-    # Crear un diccionario con los datos del cliente (incluyendo valores por defecto ocultos)
+    # Diccionario completo: 11 campos del usuario + los 8 categóricos más importantes ocultos
     client_data = {
-        "contract": contract,
+        "contract": "month-to-month",              # Oculto (Top 1 más importante - por defecto)
         "dependents": dependents,
-        "deviceprotection": device_protection,
-        "gender": "female",                # Valor por defecto (oculto)
-        "internetservice": internet_service,
+        "deviceprotection": "no",                  # Oculto (Top 6 más importante - por defecto)
+        "gender": gender,
+        "internetservice": "fiber_optic",          # Oculto (Top 4 más importante - por defecto)
         "monthlycharges": monthly_charges,
-        "multiplelines": "no",             # Valor por defecto (oculto)
-        "onlinebackup": online_backup,
-        "onlinesecurity": online_security,
+        "multiplelines": multiplelines,
+        "onlinebackup": "no",                      # Oculto (Top 5 más importante - por defecto)
+        "onlinesecurity": "no",                    # Oculto (Top 2 más importante - por defecto)
         "paperlessbilling": paperless_billing,
-        "partner": "no",                   # Valor por defecto (oculto)
-        "paymentmethod": payment_method,
-        "phoneservice": "yes",             # Valor por defecto (oculto - es el más común)
-        "seniorcitizen": "no",             # Valor por defecto (oculto)
+        "partner": partner,
+        "paymentmethod": "electronic_check",       # Oculto (Top 7 más importante - por defecto)
+        "phoneservice": phoneservice,
+        "seniorcitizen": senior_citizen,
         "streamingmovies": streaming_movies,
-        "streamingtv": streaming_tv,
-        "techsupport": tech_support,
+        "streamingtv": "no",                       # Oculto (Top 8 más importante - por defecto)
+        "techsupport": "no",                       # Oculto (Top 3 más importante - por defecto)
         "tenure": tenure,
         "totalcharges": total_charges
     }
